@@ -1,0 +1,7 @@
+name: RageGame
+version: ${project.version}
+main: pl.rex89m.ragegame.RageGame
+api-version: 1.16
+authors: [ rex89m ]
+commands:
+  Ragegame:
