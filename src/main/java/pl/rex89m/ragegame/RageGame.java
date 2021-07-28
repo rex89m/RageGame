@@ -24,7 +24,6 @@ public final class RageGame extends JavaPlugin {
         this.Dmg_Player = new Dmg_Player(this);
         this.fangs = new Fangs(this);
         this.shulker = new Shulker(this);
-
     }
 
     @Override
@@ -32,7 +31,6 @@ public final class RageGame extends JavaPlugin {
         Yml.load();
         armorStandShot.Every();
         shot.clear_arrow();
-        checkPoint.Every();
         fangs.Every();
         shulker.Every();
 
@@ -40,7 +38,7 @@ public final class RageGame extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(listener, this);
         Bukkit.getPluginManager().registerEvents(shulker, this);
         Bukkit.getPluginManager().registerEvents(Dmg_Player, this);
-
+        Bukkit.getPluginManager().registerEvents(checkPoint, this);
     }
     @Override
     public void onDisable() {

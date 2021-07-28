@@ -1,6 +1,8 @@
 package pl.rex89m.ragegame;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.EntityType;
 
 public class Fangs {
 
@@ -15,7 +17,7 @@ public class Fangs {
             @Override
             public void run() {
                 Every();
-                /*
+
                 for (Location i : Yml.getFangsLocation(Yml.FangsType.K1)){
                     i.getWorld().spawnEntity(i, EntityType.EVOKER_FANGS);
                 }
@@ -28,7 +30,7 @@ public class Fangs {
                     }
                 },20);
 
-                 */
+
             }
         },40);
     }
