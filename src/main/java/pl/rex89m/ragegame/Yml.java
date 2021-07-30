@@ -80,10 +80,13 @@ public class Yml {
         sectionFangs.set(fangsType.name(),lista);
         save();
     }
-    public static void removeFangs(Location location, FangsType fangsType){
-        ArrayList<String> list = getFangsString(fangsType);
+    public static void removeFangs(Location location){
+        ArrayList<String> list = getFangsString(FangsType.K1);
         list.remove(Loc.save(location));
-        sectionFangs.set(fangsType.name(),Loc.save(location));
+        sectionFangs.set(FangsType.K1.name(),list);
+        ArrayList<String> list2 = getFangsString(FangsType.K2);
+        list2.remove(Loc.save(location));
+        sectionFangs.set(FangsType.K2.name(),list2);
         save();
     }
 
@@ -157,7 +160,6 @@ public class Yml {
         sectionShulker.set("Location",Loc.save(location));
         save();
     }
-
 
     public static void save(){
         try {

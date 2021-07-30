@@ -22,10 +22,12 @@ public class CheckPoint implements Listener {
             if (location.getX() - e.getPlayer().getLocation().getX() > 2 || location.getX() - e.getPlayer().getLocation().getX() < -2) {
                 Yml.setCheckPoint(e.getPlayer().getName(), e.getPlayer().getLocation().add(0, 1.2, 0));
                 e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1,0);
+                e.getPlayer().setWalkSpeed((float) 0.2);
             }
             else if (location.getZ() - e.getPlayer().getLocation().getZ() > 2 || location.getZ() - e.getPlayer().getLocation().getZ() < -2) {
                 Yml.setCheckPoint(e.getPlayer().getName(), e.getPlayer().getLocation().add(0, 1.2, 0));
                 e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1,0);
+                e.getPlayer().setWalkSpeed((float) 0.2);
             }
         }
     }

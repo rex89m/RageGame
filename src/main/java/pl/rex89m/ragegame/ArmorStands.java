@@ -1,6 +1,8 @@
 package pl.rex89m.ragegame;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.ArmorStand;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,7 +12,7 @@ public class ArmorStands {
 
     private Location location;
 
-    private Double speed;
+    private Integer speed;
 
     private int killCount;
 
@@ -33,11 +35,11 @@ public class ArmorStands {
         this.location = location;
     }
 
-    public Double getSpeed() {
+    public Integer getSpeed() {
         return speed;
     }
 
-    public void setSpeed(Double speed) {
+    public void setSpeed(Integer speed) {
         this.speed = speed;
     }
 
@@ -55,17 +57,22 @@ public class ArmorStands {
 
     static HashMap<Location, ArmorStands> save = new HashMap<>();
 
-    public ArmorStands(Location location, Integer speed, UUID uuid){
-        this.location=location;
-        this.speed= Double.valueOf(speed);
-        this.killCount=0;
-        this.uuid=uuid;
-        if (!save.containsKey(location)){
-            Yml.set(uuid+".speed", String.valueOf(speed));
-            Yml.set(uuid+".killCount", String.valueOf(killCount));
-            Yml.set(uuid+".Location", Loc.save(location));
-            save.put(location, this);
-            ArmorStandsList.add(this);
+    public ArmorStands(Location location, Integer speed, UUID uuid) {
+        ArmorStand armorStand = (ArmorStand) Bukkit.getEntity(uuid);
+        if (armorStand != null){
+            armorStand.setSmall(true);
+            this.location=location;
+            this.speed= speed;
+            this.killCount=0;
+            this.uuid=uuid;
+            if (!save.containsKey(location)){
+                Yml.set(uuid+".speed", String.valueOf(speed));
+                Yml.set(uuid+".killCount", String.valueOf(killCount));
+                Yml.set(uuid+".Location", Loc.save(location));
+                save.put(location, this);
+                ArmorStandsList.add(this);
+            }
+        }else{
         }
     }
 

@@ -18,13 +18,15 @@ public class Shot {
     ArrayList<Arrow> arrows = new ArrayList<>();
 
     public void ShotEffect(ArmorStand entity){
-        if (!entity.isSmall()) {
-            entity.setSmall(true);
+        if (entity!=null) {
+            if (!entity.isSmall()) {
+                entity.setSmall(true);
+            }
+            Location location = entity.getLocation();
+            Arrow arrow = entity.getWorld().spawnArrow(location.add(0, 1.3, 0), entity.getLocation().getDirection(), 3, 0);
+            arrow.setGravity(false);
+            arrows.add(arrow);
         }
-        Location location = entity.getLocation();
-        Arrow arrow = entity.getWorld().spawnArrow(location.add(0,1.3,0), entity.getLocation().getDirection(), 3,0);
-        arrow.setGravity(false);
-        arrows.add(arrow);
     }
 
     public void clear_arrow(){

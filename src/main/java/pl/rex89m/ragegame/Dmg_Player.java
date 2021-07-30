@@ -20,6 +20,7 @@ public class Dmg_Player implements Listener {
     @EventHandler
     public static void DMG(EntityDamageByEntityEvent e){
         if (e.getEntity() instanceof Player) {
+            System.out.println(e.getDamager().getType());
             if (e.getDamager().getType() == EntityType.ARROW) {
                 e.getEntity().teleport(Yml.getCheckPoint(e.getEntity().getName()), PlayerTeleportEvent.TeleportCause.PLUGIN);
                 e.getEntity().setFireTicks(0);

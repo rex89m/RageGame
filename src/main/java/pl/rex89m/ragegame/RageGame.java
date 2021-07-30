@@ -1,8 +1,11 @@
 package pl.rex89m.ragegame;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.rex89m.ragegame.Commands.Ragegame;
+
+import java.util.HashMap;
 
 public final class RageGame extends JavaPlugin {
 
@@ -33,12 +36,14 @@ public final class RageGame extends JavaPlugin {
         shot.clear_arrow();
         fangs.Every();
         shulker.Every();
-
         getCommand("Ragegame").setExecutor(new Ragegame(this));
         Bukkit.getPluginManager().registerEvents(listener, this);
         Bukkit.getPluginManager().registerEvents(shulker, this);
         Bukkit.getPluginManager().registerEvents(Dmg_Player, this);
         Bukkit.getPluginManager().registerEvents(checkPoint, this);
+        for (Player i: Bukkit.getOnlinePlayers()){
+            listener.playerbulletlocation.put(i, new HashMap<>());
+        }
     }
     @Override
     public void onDisable() {

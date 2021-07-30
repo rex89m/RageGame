@@ -4,21 +4,25 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.Main;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftShulkerBullet;
 import org.bukkit.entity.*;
 import org.bukkit.entity.Shulker;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
+import org.bukkit.metadata.MetadataValue;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import pl.rex89m.ragegame.Event.ShulkerTarget;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
@@ -45,9 +49,9 @@ public class Listener implements org.bukkit.event.Listener {
                     if (playerIntegerHashMap.get(p.getName())!=null) {
                         e.setCancelled(true);
                         if (playerIntegerHashMap.get(p.getName()) == 0) {
-                            new ArmorStands(e.getEntity().getLocation(),  3, e.getEntity().getUniqueId());
+                            new ArmorStands(e.getEntity().getLocation(),  0, e.getEntity().getUniqueId());
                         } else {
-                            new ArmorStands(e.getEntity().getLocation(), playerIntegerHashMap.get(p.getName()) * 4, e.getEntity().getUniqueId());
+                            new ArmorStands(e.getEntity().getLocation(), playerIntegerHashMap.get(p.getName()), e.getEntity().getUniqueId());
                         }
                     }
                 }
@@ -59,7 +63,7 @@ public class Listener implements org.bukkit.event.Listener {
     @EventHandler
     public void join(PlayerJoinEvent e){
         e.getPlayer().setWalkSpeed((float) 0.2);
-
+        playerbulletlocation.put(e.getPlayer(), new HashMap<>());
 
     }
 
@@ -89,26 +93,35 @@ public class Listener implements org.bukkit.event.Listener {
         }
     }
 
-    HashMap<UUID, ArrayList<Player>> target = new HashMap<>();
+    HashMap<UUID, ArrayList<String>> target = new HashMap<>();
+    HashMap<ShulkerBullet, Shulker> shulkerBulletShulkerHashMap = new HashMap<>();
+    HashMap<ShulkerBullet, Player> shulkerBulletShulkePlayerrHashMap = new HashMap<>();
+    HashMap<Player, HashMap<Location, ShulkerBullet>> playerbulletlocation = new HashMap<>();
 
     @EventHandler
     public void ShulkerTarget(ShulkerTarget e){
         if (target.containsKey(e.getShulker().getUniqueId())){
-            ArrayList<Player> players = target.get(e.getShulker().getUniqueId());
-            if (!players.contains(e.getPlayer())){
-                players.add(e.getPlayer());
+            ArrayList<String> players = target.get(e.getShulker().getUniqueId());
+            if (!players.contains(e.getPlayer().getName())){
+                players.add(e.getPlayer().getName());
                 target.put(e.getShulker().getUniqueId(), players);
                 CraftShulkerBullet shulkerBullet = (CraftShulkerBullet) e.getShulker().getLocation().getWorld().spawnEntity(e.getShulker().getLocation().add(0,1,0), EntityType.SHULKER_BULLET);
                 shulkerBullet.setInvulnerable(true);
                 shulkerBullet.setTarget(e.getPlayer());
+                shulkerBulletShulkerHashMap.put(shulkerBullet, e.getShulker());
+                shulkerBulletShulkePlayerrHashMap.put(shulkerBullet, e.getPlayer());
+                playerbulletlocation.get(e.getPlayer()).put(e.getShulker().getLocation(), shulkerBullet);
             }
         }else{
-            ArrayList<Player> arrayList = new ArrayList<>();
-            arrayList.add(e.getPlayer());
+            ArrayList<String> arrayList = new ArrayList<>();
+            arrayList.add(e.getPlayer().getName());
             target.put(e.getShulker().getUniqueId(), arrayList);
             CraftShulkerBullet shulkerBullet = (CraftShulkerBullet) e.getShulker().getLocation().getWorld().spawnEntity(e.getShulker().getLocation().add(0,1,0), EntityType.SHULKER_BULLET);
             shulkerBullet.setInvulnerable(true);
             shulkerBullet.setTarget(e.getPlayer());
+            shulkerBulletShulkerHashMap.put(shulkerBullet, e.getShulker());
+            shulkerBulletShulkePlayerrHashMap.put(shulkerBullet, e.getPlayer());
+            playerbulletlocation.get(e.getPlayer()).put(e.getShulker().getLocation(), shulkerBullet);
         }
     }
 
@@ -123,8 +136,16 @@ public class Listener implements org.bukkit.event.Listener {
     }
 
     @EventHandler
-    public void bulletshot(Shot){
-
+    public void bulletshot(ProjectileHitEvent e){
+        if (e.getEntity().getType()==EntityType.SHULKER_BULLET){
+            if (shulkerBulletShulkerHashMap.containsKey(e.getEntity())){
+                target.get(shulkerBulletShulkerHashMap.get(e.getEntity()).getUniqueId()).remove(shulkerBulletShulkePlayerrHashMap.get(e.getEntity()).getName());
+                playerbulletlocation.get(shulkerBulletShulkePlayerrHashMap.get(e.getEntity())).remove(shulkerBulletShulkerHashMap.get(e.getEntity()).getLocation());
+                playerbulletlocation.get(Bukkit.getPlayer(shulkerBulletShulkePlayerrHashMap.get(e.getEntity()).getName())).remove(shulkerBulletShulkerHashMap.get(e.getEntity()).getLocation());
+                e.getEntity().teleport(Yml.getCheckPoint(e.getEntity().getName()), PlayerTeleportEvent.TeleportCause.PLUGIN);
+                e.getEntity().setFireTicks(0);
+                e.setCancelled(true);
+            }
+        }
     }
-
 }

@@ -17,7 +17,6 @@ public class Fangs {
             @Override
             public void run() {
                 Every();
-
                 for (Location i : Yml.getFangsLocation(Yml.FangsType.K1)){
                     i.getWorld().spawnEntity(i, EntityType.EVOKER_FANGS);
                 }
@@ -29,8 +28,6 @@ public class Fangs {
                         }
                     }
                 },20);
-
-
             }
         },40);
     }
